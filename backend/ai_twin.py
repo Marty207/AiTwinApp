@@ -13,7 +13,9 @@ from firebase_admin import credentials, firestore
 firebase_json = os.getenv("FIREBASE_KEY")
 
 if not firebase_json:
-    raise Exception("FIREBASE_KEY environment variable not found!")
+    print("⚠️ No FIREBASE_KEY found — running WITHOUT memory")
+    firebase_json = None
+
 
 firebase_dict = json.loads(firebase_json)
 
@@ -36,14 +38,23 @@ CORS(app)
 
 # ---- Helper Functions for Memory ----
 def get_memory(user_id: str):
-    doc_ref = db.collection("chat_memory").document(user_id)
-    doc = doc_ref.get()
-    if doc.exists:
-        return doc.to_dict().get("messages", [])
-    return []
+    try:
+        doc_ref = db.collection("chat_memory").document(user_id)
+        doc = doc_ref.get()
+        if doc.exists:
+            return doc.to_dict().get("messages", [])
+        return []
+    except Exception as e:
+        print("⚠️ Firebase get_memory failed:", e)
+        return []
+
 
 def save_memory(user_id: str, messages):
-    db.collection("chat_memory").document(user_id).set({"messages": messages})
+    try:
+        db.collection("chat_memory").document(user_id).set({"messages": messages})
+    except Exception as e:
+        print("⚠️ Firebase save_memory failed:", e)
+
 
 def append_and_trim(memory, role, content, max_turns=20):
     memory.append({"role": role, "content": content})
@@ -60,7 +71,7 @@ def query_deepseek(messages):
         "messages": messages,
         "temperature": 0.9
     }
-    resp = requests.post("https://api.deepseek.com/v1/chat/completions", headers=headers, json=data, timeout=60)
+    resp = requests.post("https://api.deepseek.com/chat/completions", headers=headers, json=data, timeout=60)
     resp.raise_for_status()
     j = resp.json()
     return j["choices"][0]["message"]["content"]
