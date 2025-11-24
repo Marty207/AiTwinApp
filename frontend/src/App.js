@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./App.css";
 
 // ----------------------
@@ -40,7 +40,7 @@ function App() {
   const [gender, setGender] = useState("neutral");
   const [allowProfanity, setAllowProfanity] = useState(false);
 
-  const [description, setDescription] = useState("");  // for generate screen
+  const [description, setDescription] = useState(""); // for generate screen
   const [avatarLoading, setAvatarLoading] = useState(false); // spinner state
 
   const [message, setMessage] = useState("");
@@ -51,6 +51,13 @@ function App() {
 
   const nextScreen = () => setScreen((s) => s + 1);
   const prevScreen = () => setScreen((s) => s - 1);
+
+  // ✅ Auto-scroll reference to bottom of chat
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat, loading]);
 
   // ----------------------------------------
   // GENERATE AVATAR WITH DESCRIPTION (Pollinations)
@@ -134,7 +141,7 @@ function App() {
   return (
     <div className="app-container">
 
-      {/* SCREEN 0 — Name your Twin */}
+      {/* SCREEN 0 — Name Your Twin */}
       {screen === 0 && (
         <div className="screen slide-in">
           <h1>Name Your Twin</h1>
@@ -236,12 +243,11 @@ function App() {
         </div>
       )}
 
-      {/* SCREEN 3 — GENERATE YOUR OWN TWIN (description-based) */}
+      {/* SCREEN 3 — GENERATE YOUR OWN TWIN */}
       {screen === 3 && (
         <div className="screen slide-in">
           <h1>Generate Your Twin</h1>
 
-          {/* Centered avatar preview with loading state */}
           <div className="avatar-center">
             <div className="avatar-wrapper">
               <img
@@ -257,7 +263,7 @@ function App() {
 
           <input
             className="big-input"
-            placeholder="Describe how your twin should look... type a detailed description of your twin’s appearance."
+            placeholder="Describe how your twin should look..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -347,11 +353,15 @@ function App() {
                 {msg.content}
               </div>
             ))}
+
             {loading && (
               <div className="bubble assistant typing">
                 {twinName} is typing...
               </div>
             )}
+
+            {/* ✅ Invisible auto-scroll anchor */}
+            <div ref={bottomRef} />
           </div>
 
           <div className="input-area">
