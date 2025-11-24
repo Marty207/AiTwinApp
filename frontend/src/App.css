@@ -4,7 +4,8 @@
   height: 100vh;
   background: #0d1117;
   color: white;
-  overflow: hidden;
+  overflow-y: auto;   /* ✅ allow scrolling */
+  overflow-x: hidden;
   position: relative;
   font-family: system-ui, sans-serif;
 }
@@ -13,16 +14,17 @@
   width: 100%;
   height: 100%;
   padding: 40px;
+  padding-bottom: 160px; /* ✅ ensures Next button is reachable */
   box-sizing: border-box;
   position: absolute;
   top: 0;
   left: 0;
   animation: slideIn 0.35s ease;
-
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  overflow-y: auto; /* ✅ scroll when content overflows */
 }
 
 @keyframes slideIn {
@@ -59,7 +61,9 @@ h1 {
 }
 
 /* Buttons */
-.next-btn, .choice, .back-btn {
+.next-btn,
+.choice,
+.back-btn {
   margin-top: 20px;
   padding: 14px 20px;
   font-size: 18px;
@@ -73,15 +77,19 @@ h1 {
   margin-right: auto;
 }
 
+/* ✅ keep Next visible */
 .next-btn {
   background: #2084ff;
   color: white;
+  position: sticky;
+  bottom: 20px;
 }
 
 .choice {
   background: #161b22;
   color: #c9d1d9;
 }
+
 .choice:hover {
   background: #f3f5f7;
 }
@@ -114,30 +122,23 @@ h1 {
   border-radius: 14px;
   cursor: pointer;
   border: 2px solid #333;
-
-  opacity: 0.90;         /* much dimmer */
+  opacity: 0.90;
   transition: 0.25s ease;
 }
 
-.preset-image:hover {
-  opacity: 0.90;
-}
-
 .preset-image.selected {
-  opacity: 4 !important;
+  opacity: 1 !important;
   outline: 4px solid #e7ebef;
   transform: scale(1.12);
   box-shadow: 0 0 18px rgba(76, 154, 255, 0.8);
 }
 
-/* --------- Generated Twin (Screen 3) --------- */
-
+/* Generated Twin (Screen 3) */
 .avatar-center {
   width: 100%;
   display: flex;
   justify-content: center;
   margin-bottom: 40px;
-  margin-top: 0px;
 }
 
 .avatar-wrapper {
@@ -158,13 +159,12 @@ h1 {
   transition: opacity 0.4s ease, filter 0.4s ease;
 }
 
-/* Dim & blur while loading */
 .avatar-preview-lg.dim {
   opacity: 0.90;
   filter: blur(2px);
 }
 
-/* Spinner overlay */
+/* Spinner */
 .spinner {
   position: absolute;
   width: 55px;
@@ -179,8 +179,7 @@ h1 {
   100% { transform: rotate(360deg); }
 }
 
-/* --------- Chat UI --------- */
-
+/* Chat UI */
 .chat-screen {
   padding: 20px;
 }
@@ -203,6 +202,7 @@ h1 {
   overflow-y: auto;
   padding-right: 6px;
   margin-top: 20px;
+  -webkit-overflow-scrolling: touch; /* ✅ iOS smooth scrolling */
 }
 
 .bubble {
@@ -248,4 +248,118 @@ h1 {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+/* =========================
+   📱 MOBILE RESPONSIVE UI
+   ========================= */
+@media (max-width: 600px) {
+
+  .screen {
+    padding: 20px;
+    padding-bottom: 180px; /* ✅ safer on small phones */
+    justify-content: flex-start;
+  }
+
+  h1 {
+    font-size: 26px;
+    margin-bottom: 18px;
+  }
+
+  .section-title {
+    font-size: 18px;
+    margin-top: 18px;
+  }
+
+  .big-input {
+    width: 95%;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .next-btn,
+  .choice,
+  .back-btn {
+    width: 95%;
+    font-size: 16px;
+    padding: 12px 16px;
+    margin-top: 14px;
+  }
+
+  /* Preset avatar grid */
+  .preset-grid {
+    gap: 14px;
+  }
+
+  .preset-image {
+    width: 105px;
+    height: 150px;
+  }
+
+  .avatar-wrapper {
+    width: 190px;
+    height: 260px;
+  }
+
+  .avatar-preview-lg {
+    width: 185px;
+    height: 260px;
+  }
+
+  .chat-screen {
+    padding: 12px;
+  }
+
+  .header h2 {
+    font-size: 20px;
+  }
+
+  .chat-box {
+    height: calc(100vh - 190px);
+    margin-top: 12px;
+  }
+
+  .bubble {
+    max-width: 85%;
+    font-size: 15px;
+    padding: 10px 14px;
+    margin: 6px 0;
+  }
+
+  .chat-avatar {
+    width: 38px;
+    height: 38px;
+  }
+
+  .input-area {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .input-area input {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .input-area button {
+    font-size: 15px;
+    padding: 10px 14px;
+  }
+}
+
+/* ✅ tiny screens */
+@media (max-width: 380px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  .preset-image {
+    width: 95px;
+    height: 135px;
+  }
+
+  .avatar-preview-lg {
+    width: 165px;
+    height: 235px;
+  }
 }
