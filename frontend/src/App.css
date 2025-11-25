@@ -12,20 +12,19 @@
 
 .screen {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;        /* ✅ allows screen to extend + scroll */
   padding: 40px;
-  padding-bottom: 160px; /* ✅ ensures Next button is reachable */
+  padding-bottom: 160px;    /* ✅ keeps Next button visible */
   box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
   animation: slideIn 0.35s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  overflow-y: auto; /* ✅ scroll when content overflows */
+  overflow-y: auto;         /* ✅ scrolling works */
+  position: relative;       /* ✅ prevents scroll lock */
 }
+
 
 @keyframes slideIn {
   from { transform: translateX(40px); opacity: 0; }
@@ -166,7 +165,6 @@ h1 {
 
 /* Spinner */
 .spinner {
-  position: absolute;
   width: 55px;
   height: 55px;
   border: 6px solid rgba(255,255,255,0.25);
